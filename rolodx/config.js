@@ -5,7 +5,7 @@ const ROLODX_CONFIG = {
 
   // Supabase — get these from your project Settings > API
   supabase: {
-    url:     'https://supabase.com/dashboard/project/rhdcnzvgtkwqbgovhprj',       // e.g. https://xxxx.supabase.co 
+    url:     'https://rhdcnzvgtkwqbgovhprj.supabase.co',       // e.g. https://xxxx.supabase.co 
     anonKey: 'sb_publishable_ftnOQymt0w09VbMDb2afRQ_zaedbi1a',  // safe to expose publicly
   },
 
