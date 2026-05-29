@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Rolodx</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --canvas: #ffffff; --surface-soft: #fbfbf9; --surface-card: #f5f3f0;
+      --secondary-bg: #ede9e5; --hairline: #dbd7d3;
+      --primary: #d97706; --primary-hover: #b45309; --primary-light: #fef3c7;
+      --ink: #1c1917; --body: #44403c; --mute: #78716c; --ash: #a8a29e;
+      --error: #dc2626; --error-bg: #fef2f2;
+      --success: #059669; --success-bg: #f0fdf4;
+      --warning: #d97706; --warning-bg: #fffbeb;
+      --rounded-md: 16px; --rounded-lg: 32px; --rounded-full: 9999px;
+      --font-display: 'Manrope', sans-serif; --font-body: 'Plus Jakarta Sans', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--surface-soft); color: var(--body); font-family: var(--font-body); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+
+    /* LOGIN */
+    .login-wrap {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
+    }
+    .login-card {
+      background: var(--canvas); border-radius: var(--rounded-lg); padding: 48px 40px;
+      width: 100%; max-width: 400px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+    }
+    .login-logo { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--ink); letter-spacing: -0.5px; margin-bottom: 32px; display: block; text-decoration: none; }
+    .login-logo em { color: var(--primary); font-style: normal; }
+    .login-heading { font-family: var(--font-display); font-size: 24px; font-weight: 800; letter-spacing: -0.6px; color: var(--ink); margin-bottom: 6px; }
+    .login-sub { font-size: 14px; color: var(--mute); margin-bottom: 32px; }
+
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    label { font-size: 13px; font-weight: 600; color: var(--ink); }
+    input[type="email"], input[type="password"] {
+      width: 100%; padding: 11px 15px; font-family: var(--font-body); font-size: 15px; color: var(--ink);
+      background: var(--canvas); border: 1.5px solid var(--hairline); border-radius: var(--rounded-md); outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input:focus { border-color: var(--ink); box-shadow: 0 0 0 4px rgba(217,119,6,0.12); }
+
+    .btn-login {
+      width: 100%; padding: 14px; font-family: var(--font-body); font-size: 15px; font-weight: 700;
+      background: var(--primary); color: #fff; border: none; border-radius: var(--rounded-md);
+      cursor: pointer; transition: background 0.15s; margin-top: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-login:hover { background: var(--primary-hover); }
+    .btn-login:disabled { background: var(--ash); cursor: not-allowed; }
+
+    .login-error {
+      background: var(--error-bg); border: 1px solid #fca5a5; border-radius: var(--rounded-md);
+      padding: 12px 14px; font-size: 13px; color: var(--error); margin-bottom: 16px; display: none;
+    }
+    .login-error.show { display: block; }
+
+    /* DASHBOARD */
+    .dashboard { display: none; min-height: 100vh; }
+    .dash-nav {
+      height: 64px; background: var(--canvas); border-bottom: 1px solid var(--hairline);
+      display: flex; align-items: center; padding: 0 32px; justify-content: space-between; position: sticky; top: 0; z-index: 10;
+    }
+    .dash-logo { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--ink); letter-spacing: -0.5px; text-decoration: none; }
+    .dash-logo em { color: var(--primary); font-style: normal; }
+    .dash-nav-right { display: flex; align-items: center; gap: 16px; }
+    .dash-user { font-size: 13px; color: var(--mute); }
+    .btn-sm {
+      padding: 7px 14px; font-family: var(--font-body); font-size: 13px; font-weight: 700;
+      border: none; border-radius: 10px; cursor: pointer; transition: background 0.15s; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    .btn-view { background: var(--primary-light); color: var(--primary-hover); }
+    .btn-view:hover { background: #fde68a; }
+    .btn-logout { background: var(--secondary-bg); color: var(--ink); }
+    .btn-logout:hover { background: #e0dbd5; }
+
+    .dash-body { max-width: 1100px; margin: 0 auto; padding: 40px 32px; }
+    .dash-header { margin-bottom: 32px; }
+    .dash-title { font-family: var(--font-display); font-size: 28px; font-weight: 800; letter-spacing: -0.8px; color: var(--ink); margin-bottom: 4px; }
+    .dash-sub { font-size: 14px; color: var(--mute); }
+
+    /* TABS */
+    .tabs { display: flex; gap: 4px; background: var(--surface-card); border-radius: var(--rounded-full); padding: 4px; width: fit-content; margin-bottom: 28px; }
+    .tab {
+      font-family: var(--font-body); font-size: 13px; font-weight: 600; color: var(--mute);
+      padding: 7px 20px; border-radius: var(--rounded-full); border: none; background: transparent;
+      cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 6px;
+    }
+    .tab.on { background: var(--canvas); color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .tab-count {
+      font-size: 11px; font-weight: 700; min-width: 20px; height: 20px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: var(--rounded-full); background: var(--primary); color: #fff; padding: 0 5px;
+    }
+    .tab-count.zero { background: var(--secondary-bg); color: var(--mute); }
+
+    /* CONTACT ROWS */
+    .panel { display: none; }
+    .panel.on { display: block; }
+
+    .contact-row {
+      background: var(--canvas); border-radius: var(--rounded-md); padding: 20px 24px;
+      margin-bottom: 10px; display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: start;
+    }
+    .row-av {
+      width: 44px; height: 44px; border-radius: var(--rounded-full);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .row-info {}
+    .row-name { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--ink); letter-spacing: -0.2px; }
+    .row-role { font-size: 13px; color: var(--mute); margin-bottom: 6px; }
+    .row-desc { font-size: 13px; color: var(--body); line-height: 1.55; margin-bottom: 10px; }
+    .row-meta { display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; color: var(--mute); align-items: center; }
+    .row-tag { padding: 3px 9px; background: var(--surface-card); color: var(--body); border-radius: var(--rounded-full); font-weight: 600; font-size: 11px; }
+    .row-link { color: var(--primary); text-decoration: none; font-weight: 600; }
+    .row-link:hover { text-decoration: underline; }
+    .row-time { font-size: 11px; color: var(--ash); }
+
+    .row-actions { display: flex; gap: 8px; flex-shrink: 0; flex-direction: column; }
+    .btn-approve {
+      padding: 8px 18px; font-family: var(--font-body); font-size: 13px; font-weight: 700;
+      background: var(--success-bg); color: var(--success); border: 1.5px solid #a7f3d0;
+      border-radius: 10px; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    }
+    .btn-approve:hover { background: #d1fae5; }
+    .btn-reject {
+      padding: 8px 18px; font-family: var(--font-body); font-size: 13px; font-weight: 700;
+      background: var(--error-bg); color: var(--error); border: 1.5px solid #fca5a5;
+      border-radius: 10px; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    }
+    .btn-reject:hover { background: #fee2e2; }
+    .btn-remove {
+      padding: 8px 18px; font-family: var(--font-body); font-size: 13px; font-weight: 700;
+      background: var(--surface-card); color: var(--mute); border: 1.5px solid var(--hairline);
+      border-radius: 10px; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    }
+    .btn-remove:hover { background: var(--secondary-bg); color: var(--error); border-color: #fca5a5; }
+
+    .empty-msg { text-align: center; padding: 64px 32px; color: var(--mute); }
+    .empty-msg strong { display: block; font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+
+    .loading-msg { text-align: center; padding: 48px; color: var(--mute); font-size: 14px; }
+
+    .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: var(--ink); color: #fff; font-size: 14px; font-weight: 600;
+      padding: 12px 20px; border-radius: var(--rounded-md);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      transform: translateY(80px); opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      z-index: 1000;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--error); }
+
+    @media (max-width: 768px) {
+      .dash-nav { padding: 0 20px; }
+      .dash-body { padding: 24px 20px; }
+      .contact-row { grid-template-columns: auto 1fr; }
+      .row-actions { flex-direction: row; grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-wrap">
+  <div class="login-card">
+    <a href="index.html" class="login-logo">Rolod<em>x</em></a>
+    <div class="login-heading">Admin dashboard</div>
+    <p class="login-sub" id="login-sub">Sign in with your Barrett's account to review applications.</p>
+
+    <div class="login-error" id="login-error">Incorrect email or password.</div>
+
+    <form id="login-form">
+      <div class="field">
+        <label for="auth-email">Email</label>
+        <input type="email" id="auth-email" placeholder="you@example.com" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label for="auth-password">Password</label>
+        <input type="password" id="auth-password" placeholder="Your password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn-login" id="login-btn">
+        <div class="spinner" id="login-spinner"></div>
+        <span id="login-label">Sign in</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <nav class="dash-nav">
+    <a href="index.html" class="dash-logo">Rolod<em>x</em></a>
+    <div class="dash-nav-right">
+      <span class="dash-user" id="dash-user"></span>
+      <a href="index.html" class="btn-sm btn-view" target="_blank">View network</a>
+      <button class="btn-sm btn-logout" id="logout-btn">Sign out</button>
+    </div>
+  </nav>
+
+  <div class="dash-body">
+    <div class="dash-header">
+      <div class="dash-title">Network admin</div>
+      <div class="dash-sub">Review applications and manage your network.</div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab on" data-tab="pending">
+        Pending
+        <span class="tab-count zero" id="pending-count">0</span>
+      </button>
+      <button class="tab" data-tab="approved">
+        Approved
+        <span class="tab-count zero" id="approved-count">0</span>
+      </button>
+      <button class="tab" data-tab="rejected">
+        Rejected
+        <span class="tab-count zero" id="rejected-count">0</span>
+      </button>
+    </div>
+
+    <div class="panel on" id="panel-pending">
+      <div class="loading-msg" id="loading-pending">Loading applications...</div>
+    </div>
+    <div class="panel" id="panel-approved">
+      <div class="loading-msg" id="loading-approved">Loading contacts...</div>
+    </div>
+    <div class="panel" id="panel-rejected">
+      <div class="loading-msg" id="loading-rejected">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script>
+  const { createClient } = supabase;
+  const db = createClient(ROLODX_CONFIG.supabase.url, ROLODX_CONFIG.supabase.anonKey);
+  const owner = ROLODX_CONFIG.owner;
+
+  document.getElementById('login-sub').textContent =
+    'Sign in with ' + owner.name.split(' ')[0] + "'s account to review applications.";
+
+  const COLOURS = ['#7c3aed','#059669','#dc2626','#0891b2','#d97706','#be185d','#4f46e5','#0f766e','#92400e','#1d4ed8'];
+  function colourFor(s) { let h=0; for(let c of s) h=(h*31+c.charCodeAt(0))&0xffff; return COLOURS[h%COLOURS.length]; }
+  function initials(f,l) { return ((f||'').charAt(0)+(l||'').charAt(0)).toUpperCase(); }
+
+  function showToast(msg, type='') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (type ? ' '+type : '');
+    setTimeout(() => { t.className = 'toast'; }, 3000);
+  }
+
+  function formatDate(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleDateString('en-ZA', { day:'numeric', month:'short', year:'numeric' });
+  }
+
+  // ── Auth ──────────────────────────────────────────────
+  document.getElementById('login-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = document.getElementById('auth-email').value.trim();
+    const pass = document.getElementById('auth-password').value;
+    const btn = document.getElementById('login-btn');
+    const spinner = document.getElementById('login-spinner');
+    const label = document.getElementById('login-label');
+
+    btn.disabled = true;
+    spinner.style.display = 'block';
+    label.textContent = 'Signing in...';
+
+    const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
+
+    spinner.style.display = 'none';
+    btn.disabled = false;
+    label.textContent = 'Sign in';
+
+    if (error) {
+      document.getElementById('login-error').classList.add('show');
+      return;
+    }
+
+    showDashboard(data.user);
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await db.auth.signOut();
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('login-wrap').style.display = 'flex';
+  });
+
+  async function checkSession() {
+    const { data: { session } } = await db.auth.getSession();
+    if (session) showDashboard(session.user);
+  }
+
+  function showDashboard(user) {
+    document.getElementById('login-wrap').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('dash-user').textContent = user.email;
+    loadAll();
+  }
+
+  // ── Data ──────────────────────────────────────────────
+  async function loadAll() {
+    const { data, error } = await db
+      .from('contacts')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      showToast('Could not load contacts: ' + error.message, 'error');
+      return;
+    }
+
+    const pending  = (data||[]).filter(c => c.status === 'pending');
+    const approved = (data||[]).filter(c => c.status === 'approved');
+    const rejected = (data||[]).filter(c => c.status === 'rejected');
+
+    setCount('pending', pending.length);
+    setCount('approved', approved.length);
+    setCount('rejected', rejected.length);
+
+    renderPanel('pending', pending,  pendingActions);
+    renderPanel('approved', approved, approvedActions);
+    renderPanel('rejected', rejected, rejectedActions);
+  }
+
+  function setCount(tab, n) {
+    const el = document.getElementById(tab + '-count');
+    el.textContent = n;
+    el.className = 'tab-count' + (n === 0 ? ' zero' : '');
+  }
+
+  function renderPanel(tab, contacts, actionsFn) {
+    const panel = document.getElementById('panel-' + tab);
+    if (!contacts.length) {
+      panel.innerHTML = `<div class="empty-msg"><strong>Nothing here</strong>${emptyMsg(tab)}</div>`;
+      return;
+    }
+    panel.innerHTML = contacts.map(c => rowHTML(c, actionsFn(c))).join('');
+  }
+
+  function emptyMsg(tab) {
+    if (tab === 'pending') return 'No applications waiting for review.';
+    if (tab === 'approved') return 'No contacts approved yet.';
+    return 'No rejected applications.';
+  }
+
+  function pendingActions(c) {
+    return `<button class="btn-approve" onclick="updateStatus('${c.id}','approved')">Approve</button>
+            <button class="btn-reject"  onclick="updateStatus('${c.id}','rejected')">Reject</button>`;
+  }
+  function approvedActions(c) {
+    return `<button class="btn-remove" onclick="updateStatus('${c.id}','rejected')">Remove</button>`;
+  }
+  function rejectedActions(c) {
+    return `<button class="btn-approve" onclick="updateStatus('${c.id}','approved')">Approve</button>`;
+  }
+
+  function rowHTML(c, actions) {
+    const ini = initials(c.first_name, c.last_name);
+    const col = colourFor(c.first_name + c.last_name);
+    const name = [c.first_name, c.last_name].filter(Boolean).join(' ');
+    const role = [c.role || c.business_name, c.location].filter(Boolean).join(' · ');
+    const cats = (c.categories||[]).map(t=>`<span class="row-tag">${t}</span>`).join('');
+    const waLink = c.whatsapp ? `<a class="row-link" href="https://wa.me/${c.whatsapp.replace(/\D/g,'')}" target="_blank">WhatsApp</a>` : '';
+    const liLink = c.linkedin ? `<a class="row-link" href="${c.linkedin}" target="_blank">LinkedIn</a>` : '';
+    const emLink = c.email    ? `<a class="row-link" href="mailto:${c.email}">Email</a>` : '';
+
+    return `<div class="contact-row" id="row-${c.id}">
+      <div class="row-av" style="background:${col}">${ini}</div>
+      <div class="row-info">
+        <div class="row-name">${name}</div>
+        <div class="row-role">${role}</div>
+        <div class="row-desc">${c.description||''}</div>
+        <div class="row-meta">
+          ${cats}
+          ${waLink}${liLink}${emLink}
+          <span class="row-time">Applied ${formatDate(c.created_at)}</span>
+        </div>
+      </div>
+      <div class="row-actions">${actions}</div>
+    </div>`;
+  }
+
+  async function updateStatus(id, status) {
+    const { error } = await db.from('contacts').update({ status }).eq('id', id);
+    if (error) { showToast('Failed: ' + error.message, 'error'); return; }
+    const msgs = { approved: 'Approved and live.', rejected: 'Removed from network.' };
+    showToast(msgs[status] || 'Updated.', status === 'approved' ? 'success' : '');
+    loadAll();
+  }
+
+  // Tab switching
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+      tab.classList.add('on');
+      document.getElementById('panel-' + tab.dataset.tab).classList.add('on');
+    });
+  });
+
+  checkSession();
+</script>
+</body>
+</html>

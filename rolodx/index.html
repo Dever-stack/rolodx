@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rolodx — Barrett's Network</title>
+  <meta name="description" content="Barrett Alexander's hand-picked network of business owners, founders, and specialists.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --canvas:        #ffffff;
+      --surface-soft:  #fbfbf9;
+      --surface-card:  #f5f3f0;
+      --secondary-bg:  #ede9e5;
+      --hairline:      #dbd7d3;
+      --primary:       #d97706;
+      --primary-hover: #b45309;
+      --primary-light: #fef3c7;
+      --ink:           #1c1917;
+      --body:          #44403c;
+      --mute:          #78716c;
+      --ash:           #a8a29e;
+      --rounded-md:    16px;
+      --rounded-lg:    32px;
+      --rounded-full:  9999px;
+      --font-display:  'Manrope', sans-serif;
+      --font-body:     'Plus Jakarta Sans', sans-serif;
+      --nav-h:         68px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--surface-soft);
+      color: var(--body);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAV */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      height: var(--nav-h);
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--hairline);
+      transition: box-shadow 0.25s;
+    }
+    .nav.scrolled { box-shadow: 0 4px 24px rgba(0,0,0,0.07); }
+    .nav-inner {
+      max-width: 1280px; margin: 0 auto; padding: 0 32px;
+      height: 100%; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--font-display); font-size: 22px; font-weight: 800;
+      color: var(--ink); text-decoration: none; letter-spacing: -0.6px;
+    }
+    .nav-logo em { color: var(--primary); font-style: normal; }
+    .nav-actions { display: flex; gap: 8px; align-items: center; }
+
+    /* CURATOR BAR */
+    .curator-bar {
+      background: var(--primary-light);
+      border-bottom: 1px solid #fde68a;
+      padding: 10px 0;
+    }
+    .curator-inner {
+      max-width: 1280px; margin: 0 auto; padding: 0 32px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .curator-av {
+      width: 36px; height: 36px; border-radius: var(--rounded-full);
+      background: var(--primary); color: #fff;
+      font-family: var(--font-display); font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .curator-text { font-size: 13px; color: var(--primary-hover); }
+    .curator-text strong { font-weight: 700; }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      font-family: var(--font-body); font-weight: 700; font-size: 14px; line-height: 1;
+      text-decoration: none; border: none; cursor: pointer;
+      border-radius: var(--rounded-md); padding: 11px 20px;
+      transition: background 0.15s, transform 0.1s; white-space: nowrap;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-secondary { background: var(--secondary-bg); color: var(--ink); }
+    .btn-secondary:hover { background: #e0dbd5; }
+    .btn-dark { background: #fff; color: var(--ink); }
+    .btn-dark:hover { background: var(--surface-card); }
+    .btn-lg { font-size: 16px; padding: 14px 30px; }
+
+    /* HERO */
+    .hero-wrap { background: var(--surface-soft); overflow: hidden; }
+    .hero {
+      max-width: 1280px; margin: 0 auto; padding: 88px 32px 80px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+      min-height: calc(88vh - var(--nav-h));
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--primary-light); color: var(--primary-hover);
+      font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 6px 14px; border-radius: var(--rounded-full); margin-bottom: 28px;
+    }
+    .hero-tag::before {
+      content:''; width:6px; height:6px; background: var(--primary);
+      border-radius:50%; flex-shrink:0;
+    }
+    .hero-headline {
+      font-family: var(--font-display);
+      font-size: clamp(52px, 6.5vw, 76px); font-weight: 800;
+      line-height: 1.03; letter-spacing: -2.5px; color: var(--ink); margin-bottom: 24px;
+    }
+    .hero-headline em { color: var(--primary); font-style: normal; }
+    .hero-sub {
+      font-size: 18px; line-height: 1.65; color: var(--mute);
+      max-width: 440px; margin-bottom: 40px;
+    }
+    .hero-ctas { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 52px; }
+    .hero-stats { display: flex; align-items: center; gap: 28px; padding-top: 36px; border-top: 1px solid var(--hairline); }
+    .hero-stat { display: flex; flex-direction: column; gap: 3px; }
+    .hero-stat-num {
+      font-family: var(--font-display); font-size: 26px; font-weight: 800;
+      color: var(--ink); letter-spacing: -0.8px;
+    }
+    .hero-stat-label { font-size: 12px; color: var(--ash); font-weight: 500; }
+    .hero-divider { width: 1px; height: 36px; background: var(--hairline); }
+
+    /* Floating cards */
+    .hero-right {
+      position: relative; height: 540px;
+      opacity: 0; animation: slideInRight 0.9s ease 0.15s forwards;
+    }
+    .float-card {
+      position: absolute; background: var(--canvas); border-radius: var(--rounded-lg);
+      padding: 22px; box-shadow: 0 12px 48px rgba(0,0,0,0.09), 0 2px 8px rgba(0,0,0,0.04);
+      width: 272px;
+    }
+    .float-card:nth-child(1) { top:0; right:32px; z-index:3; animation: floatA 7s ease-in-out 1s infinite; }
+    .float-card:nth-child(2) { top:176px; right:-8px; z-index:2; animation: floatB 7s ease-in-out 1.4s infinite; }
+    .float-card:nth-child(3) { top:340px; right:64px; z-index:1; animation: floatC 7s ease-in-out 1.8s infinite; }
+    @keyframes floatA { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
+    @keyframes floatB { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+    @keyframes floatC { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-11px)} }
+    .fc-av {
+      width:40px; height:40px; border-radius:var(--rounded-full);
+      display:flex; align-items:center; justify-content:center;
+      font-family:var(--font-display); font-size:14px; font-weight:700; color:#fff; margin-bottom:11px;
+    }
+    .fc-name { font-family:var(--font-display); font-size:14px; font-weight:700; color:var(--ink); }
+    .fc-role { font-size:12px; color:var(--mute); margin-bottom:11px; }
+    .fc-desc { font-size:12px; color:var(--body); line-height:1.55; margin-bottom:12px; }
+    .fc-tags { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:14px; }
+    .fc-tag { font-size:11px; font-weight:600; padding:3px 9px; background:var(--surface-card); color:var(--body); border-radius:var(--rounded-full); }
+    .fc-actions { display:flex; gap:6px; }
+    .fc-btn {
+      flex:1; display:flex; align-items:center; justify-content:center; gap:4px;
+      padding:8px 10px; border-radius:12px; font-size:11px; font-weight:700;
+      font-family:var(--font-body); text-decoration:none; border:none; cursor:pointer; transition:background 0.15s;
+    }
+    .fc-wa { background:var(--primary); color:#fff; }
+    .fc-wa:hover { background:var(--primary-hover); }
+    .fc-li { background:var(--surface-card); color:var(--ink); }
+    .fc-li:hover { background:var(--secondary-bg); }
+
+    /* SECTIONS */
+    .section { padding: 96px 0; }
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+    .section-label {
+      font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+      color:var(--primary); margin-bottom:12px;
+    }
+    .section-heading {
+      font-family:var(--font-display); font-size:clamp(30px,3.5vw,42px); font-weight:800;
+      letter-spacing:-1.2px; color:var(--ink); line-height:1.1; margin-bottom:14px;
+    }
+    .section-sub { font-size:17px; color:var(--mute); line-height:1.65; }
+
+    /* HOW IT WORKS */
+    .how-section { background: var(--canvas); }
+    .how-header { text-align:center; max-width:640px; margin:0 auto 64px; }
+    .how-header .section-sub { max-width:100%; }
+    .how-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+    .how-step {
+      background:var(--surface-card); border-radius:var(--rounded-lg); padding:40px 32px 36px;
+      position:relative; overflow:hidden;
+    }
+    .how-step::after {
+      content:attr(data-n); position:absolute; bottom:-16px; right:16px;
+      font-family:var(--font-display); font-size:120px; font-weight:800;
+      color:var(--hairline); line-height:1; letter-spacing:-5px; pointer-events:none; user-select:none;
+    }
+    .how-icon {
+      width:48px; height:48px; background:var(--primary-light); border-radius:var(--rounded-md);
+      display:flex; align-items:center; justify-content:center; margin-bottom:20px;
+    }
+    .how-icon svg { width:22px; height:22px; stroke:var(--primary); }
+    .how-step h3 {
+      font-family:var(--font-display); font-size:19px; font-weight:700;
+      color:var(--ink); letter-spacing:-0.3px; margin-bottom:10px;
+    }
+    .how-step p { font-size:15px; color:var(--mute); line-height:1.65; }
+
+    /* NETWORK */
+    .network-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:28px; gap:16px; }
+    .filter-strip { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:32px; }
+    .chip {
+      font-size:13px; font-weight:600; padding:8px 16px; border-radius:var(--rounded-full);
+      border:1.5px solid var(--hairline); background:var(--canvas); color:var(--body);
+      cursor:pointer; transition:all 0.15s; font-family:var(--font-body);
+    }
+    .chip:hover { border-color:var(--ash); }
+    .chip.on { background:var(--ink); color:#fff; border-color:var(--ink); }
+
+    /* Masonry */
+    .card-grid { columns: 4 260px; gap: 12px; }
+
+    /* Skeleton */
+    .skeleton-card {
+      break-inside:avoid; margin-bottom:12px;
+      background:var(--canvas); border-radius:var(--rounded-lg); padding:22px;
+    }
+    .skel {
+      background: linear-gradient(90deg, var(--surface-card) 25%, var(--secondary-bg) 50%, var(--surface-card) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 8px;
+    }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    .skel-av { width:42px; height:42px; border-radius:var(--rounded-full); margin-bottom:12px; }
+    .skel-line { height:12px; margin-bottom:8px; }
+    .skel-w80 { width:80%; }
+    .skel-w60 { width:60%; }
+    .skel-w40 { width:40%; }
+    .skel-tags { display:flex; gap:6px; margin:12px 0; }
+    .skel-tag { width:60px; height:22px; border-radius:var(--rounded-full); }
+    .skel-btn { width:100%; height:36px; border-radius:12px; margin-top:12px; }
+
+    /* Contact card */
+    .contact-card {
+      break-inside:avoid; margin-bottom:12px; background:var(--canvas);
+      border-radius:var(--rounded-lg); padding:22px;
+      transition:transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .contact-card:hover { transform:translateY(-4px); box-shadow:0 16px 48px rgba(0,0,0,0.08); }
+    .cc-head { display:flex; align-items:center; gap:12px; margin-bottom:13px; }
+    .cc-av {
+      width:42px; height:42px; border-radius:var(--rounded-full);
+      display:flex; align-items:center; justify-content:center;
+      font-family:var(--font-display); font-size:14px; font-weight:700; color:#fff; flex-shrink:0;
+    }
+    .cc-name { font-family:var(--font-display); font-size:14px; font-weight:700; color:var(--ink); letter-spacing:-0.2px; }
+    .cc-role { font-size:12px; color:var(--mute); margin-top:1px; }
+    .cc-desc { font-size:13px; color:var(--body); line-height:1.6; margin-bottom:13px; }
+    .cc-tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+    .cc-tag { font-size:11px; font-weight:600; padding:3px 9px; background:var(--surface-card); color:var(--body); border-radius:var(--rounded-full); }
+    .cc-actions { display:flex; gap:7px; }
+    .cc-btn {
+      flex:1; display:flex; align-items:center; justify-content:center; gap:5px;
+      padding:9px 10px; border-radius:12px; font-size:12px; font-weight:700;
+      font-family:var(--font-body); text-decoration:none; border:none; cursor:pointer; transition:background 0.15s;
+    }
+    .cc-wa { background:var(--primary); color:#fff; }
+    .cc-wa:hover { background:var(--primary-hover); }
+    .cc-li { background:var(--surface-card); color:var(--ink); }
+    .cc-li:hover { background:var(--secondary-bg); }
+
+    /* Empty state */
+    .empty-state {
+      text-align:center; padding:80px 32px;
+      font-size:16px; color:var(--mute);
+    }
+    .empty-state strong { display:block; font-family:var(--font-display); font-size:20px; font-weight:700; color:var(--ink); margin-bottom:8px; }
+
+    /* JOIN */
+    .join-section { background:var(--ink); padding:96px 0; }
+    .join-inner { display:grid; grid-template-columns:1fr auto; align-items:center; gap:64px; }
+    .join-heading {
+      font-family:var(--font-display); font-size:clamp(36px,4.5vw,56px); font-weight:800;
+      letter-spacing:-2px; color:#fff; line-height:1.05; margin-bottom:16px;
+    }
+    .join-heading em { color:var(--primary); font-style:normal; }
+    .join-sub { font-size:17px; color:rgba(255,255,255,0.55); line-height:1.65; max-width:500px; }
+
+    /* FOOTER */
+    .footer { background:var(--canvas); border-top:1px solid var(--hairline); padding:36px 0; }
+    .footer-inner {
+      max-width:1280px; margin:0 auto; padding:0 32px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .footer-logo { font-family:var(--font-display); font-size:18px; font-weight:800; color:var(--ink); letter-spacing:-0.4px; text-decoration:none; }
+    .footer-logo em { color:var(--primary); font-style:normal; }
+    .footer-copy { font-size:13px; color:var(--ash); }
+    .footer-by { font-size:13px; color:var(--mute); }
+    .footer-by a { color:var(--primary); text-decoration:none; font-weight:600; }
+
+    /* REVEAL */
+    .reveal { opacity:0; transform:translateY(22px); transition:opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.in { opacity:1; transform:none; }
+    .reveal-d1 { transition-delay:0.08s; }
+    .reveal-d2 { transition-delay:0.16s; }
+    .reveal-d3 { transition-delay:0.24s; }
+
+    /* HERO ENTRANCE */
+    .hero-left { opacity:0; animation:fadeUp 0.8s ease 0.05s forwards; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+    @keyframes slideInRight { from{opacity:0;transform:translateX(32px)} to{opacity:1;transform:none} }
+
+    /* RESPONSIVE */
+    @media (max-width:1024px) {
+      .hero { grid-template-columns:1fr; min-height:auto; padding:64px 24px; }
+      .hero-right { display:none; }
+      .how-steps { grid-template-columns:1fr; }
+      .join-inner { grid-template-columns:1fr; gap:32px; }
+    }
+    @media (max-width:768px) {
+      .nav-inner,.container,.footer-inner,.curator-inner { padding:0 20px; }
+      .hero { padding:48px 20px; }
+      .hero-stats { flex-wrap:wrap; gap:20px; }
+      .hero-divider { display:none; }
+      .card-grid { columns:1; }
+      .network-header { flex-direction:column; align-items:flex-start; }
+      .footer-inner { flex-direction:column; gap:10px; text-align:center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Rolod<em>x</em></a>
+    <div class="nav-actions">
+      <a href="#network" class="btn btn-secondary">Browse network</a>
+      <a href="join.html" class="btn btn-primary">Join network</a>
+    </div>
+  </div>
+</nav>
+
+<!-- CURATOR BAR -->
+<div class="curator-bar">
+  <div class="curator-inner">
+    <div class="curator-av" id="curator-av">BA</div>
+    <div class="curator-text">
+      <strong id="curator-name">Barrett Alexander's</strong> personal network — every person here is hand-picked and personally vouched for.
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero-wrap">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-tag">Barrett's Network</div>
+      <h1 class="hero-headline">The people<br><em>worth</em> knowing.</h1>
+      <p class="hero-sub">A hand-picked directory of business owners, founders, and specialists. Browse who's here — or apply to join.</p>
+      <div class="hero-ctas">
+        <a href="#network" class="btn btn-primary btn-lg">Browse the network</a>
+        <a href="join.html" class="btn btn-secondary btn-lg">Apply to join</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-num" id="stat-count">—</span>
+          <span class="hero-stat-label">People in the network</span>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-num" id="stat-cats">—</span>
+          <span class="hero-stat-label">Categories</span>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-num" id="stat-countries">—</span>
+          <span class="hero-stat-label">Countries</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating card preview (static — shows example cards) -->
+    <div class="hero-right">
+      <div class="float-card">
+        <div class="fc-av" style="background:#7c3aed">SM</div>
+        <div class="fc-name">Sarah Mitchell</div>
+        <div class="fc-role">Property Consultant · Cape Town</div>
+        <div class="fc-desc">Residential and commercial specialist. 12 years in the Western Cape market.</div>
+        <div class="fc-tags"><span class="fc-tag">Property</span><span class="fc-tag">Investment</span></div>
+        <div class="fc-actions">
+          <a class="fc-btn fc-wa" href="#">WhatsApp</a>
+          <a class="fc-btn fc-li" href="#">LinkedIn</a>
+        </div>
+      </div>
+      <div class="float-card">
+        <div class="fc-av" style="background:#059669">JO</div>
+        <div class="fc-name">James Okonkwo</div>
+        <div class="fc-role">Digital Marketer · Johannesburg</div>
+        <div class="fc-desc">Performance marketing and paid social. 40+ SA brands.</div>
+        <div class="fc-tags"><span class="fc-tag">Marketing</span><span class="fc-tag">Paid Ads</span></div>
+        <div class="fc-actions">
+          <a class="fc-btn fc-wa" href="#">WhatsApp</a>
+          <a class="fc-btn fc-li" href="#">LinkedIn</a>
+        </div>
+      </div>
+      <div class="float-card">
+        <div class="fc-av" style="background:#d97706">PN</div>
+        <div class="fc-name">Priya Naidoo</div>
+        <div class="fc-role">Corporate Lawyer · Cape Town</div>
+        <div class="fc-desc">Commercial contracts and compliance for founder-led businesses.</div>
+        <div class="fc-tags"><span class="fc-tag">Legal</span><span class="fc-tag">Contracts</span></div>
+        <div class="fc-actions">
+          <a class="fc-btn fc-wa" href="#">WhatsApp</a>
+          <a class="fc-btn fc-li" href="#">Email</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section how-section">
+  <div class="container">
+    <div class="how-header reveal">
+      <p class="section-label">How it works</p>
+      <h2 class="section-heading">From "do you know anyone?" to connected — in minutes.</h2>
+      <p class="section-sub">No cold outreach. No awkward LinkedIn messages. Real people, vouched for by someone you already trust.</p>
+    </div>
+    <div class="how-steps">
+      <div class="how-step reveal reveal-d1" data-n="1">
+        <div class="how-icon"><svg fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+        <h3>Find exactly who you need.</h3>
+        <p>Browse by category — property, legal, marketing, tech, finance, and more. Every listing is hand-approved by Barrett.</p>
+      </div>
+      <div class="how-step reveal reveal-d2" data-n="2">
+        <div class="how-icon"><svg fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <h3>One tap. Warm intro.</h3>
+        <p>Hit connect and WhatsApp opens with a message already drafted — "I got your details from Barrett's network." You're referred, not random.</p>
+      </div>
+      <div class="how-step reveal reveal-d3" data-n="3">
+        <div class="how-icon"><svg fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <h3>Be found, not forgotten.</h3>
+        <p>Two minutes to apply, one approval, and you're in. Every time someone asks Barrett "do you know anyone who does X?" — they find you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NETWORK -->
+<section class="section" id="network" style="background:var(--surface-soft)">
+  <div class="container">
+    <div class="network-header reveal">
+      <div>
+        <p class="section-label">The network</p>
+        <h2 class="section-heading">Who's in here</h2>
+      </div>
+      <a href="join.html" class="btn btn-primary">Apply to join</a>
+    </div>
+
+    <div class="filter-strip reveal" id="filter-strip">
+      <button class="chip on" data-cat="all">All</button>
+      <!-- Categories populated from config -->
+    </div>
+
+    <div class="card-grid" id="card-grid">
+      <!-- Skeleton placeholders -->
+      <div class="skeleton-card"><div class="skel skel-av"></div><div class="skel skel-line skel-w80"></div><div class="skel skel-line skel-w60"></div><div class="skel skel-line skel-w80"></div><div class="skel-tags"><div class="skel skel-tag"></div><div class="skel skel-tag"></div></div><div class="skel skel-btn"></div></div>
+      <div class="skeleton-card"><div class="skel skel-av"></div><div class="skel skel-line skel-w80"></div><div class="skel skel-line skel-w60"></div><div class="skel skel-line skel-w80"></div><div class="skel-tags"><div class="skel skel-tag"></div><div class="skel skel-tag"></div></div><div class="skel skel-btn"></div></div>
+      <div class="skeleton-card"><div class="skel skel-av"></div><div class="skel skel-line skel-w80"></div><div class="skel skel-line skel-w60"></div><div class="skel skel-line skel-w80"></div><div class="skel-tags"><div class="skel skel-tag"></div><div class="skel skel-tag"></div></div><div class="skel skel-btn"></div></div>
+      <div class="skeleton-card"><div class="skel skel-av"></div><div class="skel skel-line skel-w80"></div><div class="skel skel-line skel-w60"></div><div class="skel skel-line skel-w80"></div><div class="skel-tags"><div class="skel skel-tag"></div><div class="skel skel-tag"></div></div><div class="skel skel-btn"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN -->
+<section class="join-section">
+  <div class="container">
+    <div class="join-inner">
+      <div>
+        <p class="section-label" style="color:rgba(255,255,255,0.45)">Be in the room</p>
+        <h2 class="join-heading">You should be<br><em>in here.</em></h2>
+        <p class="join-sub">If Barrett knows your work, this is how you get found by everyone else he knows. Two minutes to fill in. A lifetime of warm introductions.</p>
+      </div>
+      <div style="flex-shrink:0">
+        <a href="join.html" class="btn btn-dark btn-lg" style="font-size:17px;padding:16px 40px">Apply to join</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <a href="index.html" class="footer-logo">Rolod<em>x</em></a>
+    <p class="footer-copy" id="footer-copy">Barrett's personal network · Cape Town</p>
+    <p class="footer-by">Built by <a href="#">Alexander Tech</a></p>
+  </div>
+</footer>
+
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script>
+  const { createClient } = supabase;
+  const db = createClient(ROLODX_CONFIG.supabase.url, ROLODX_CONFIG.supabase.anonKey);
+  const owner = ROLODX_CONFIG.owner;
+
+  // Avatar colours for contact cards
+  const COLOURS = ['#7c3aed','#059669','#dc2626','#0891b2','#d97706','#be185d','#4f46e5','#0f766e','#92400e','#1d4ed8'];
+  function colourFor(str) { let h=0; for(let c of str) h=(h*31+c.charCodeAt(0))&0xffff; return COLOURS[h%COLOURS.length]; }
+  function initials(first,last) { return ((first||'').charAt(0)+(last||'').charAt(0)).toUpperCase(); }
+
+  // Personalise page from config
+  document.getElementById('curator-av').textContent = owner.initials;
+  document.getElementById('curator-name').textContent = owner.name + "'s";
+  document.getElementById('footer-copy').textContent = owner.name + "'s personal network · " + (owner.location || 'Cape Town');
+  document.title = 'Rolodx — ' + owner.name.split(' ')[0] + "'s Network";
+
+  // Populate category chips
+  const strip = document.getElementById('filter-strip');
+  ROLODX_CONFIG.categories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.dataset.cat = cat.toLowerCase();
+    btn.textContent = cat;
+    strip.appendChild(btn);
+  });
+
+  // Nav scroll
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 16), { passive: true });
+
+  // Reveal on scroll
+  const revels = document.querySelectorAll('.reveal');
+  const ro = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);} }), {threshold:0.1});
+  revels.forEach(el => ro.observe(el));
+
+  // ── Load contacts from Supabase ──────────────────────────
+  let allContacts = [];
+  let activeFilter = 'all';
+
+  async function loadContacts() {
+    const { data, error } = await db
+      .from('contacts')
+      .select('*')
+      .eq('status', 'approved')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error(error);
+      document.getElementById('card-grid').innerHTML = '<div class="empty-state"><strong>Could not load contacts</strong>Check your Supabase config in config.js</div>';
+      return;
+    }
+
+    allContacts = data || [];
+    updateStats(allContacts);
+    renderCards(allContacts);
+  }
+
+  function updateStats(contacts) {
+    document.getElementById('stat-count').textContent = contacts.length;
+    const cats = new Set(contacts.flatMap(c => c.categories || []));
+    document.getElementById('stat-cats').textContent = cats.size;
+    const countries = new Set(contacts.map(c => (c.location || '').split(',').pop().trim()).filter(Boolean));
+    document.getElementById('stat-countries').textContent = Math.max(countries.size, 1);
+  }
+
+  function renderCards(contacts) {
+    const grid = document.getElementById('card-grid');
+    if (!contacts.length) {
+      grid.innerHTML = '<div class="empty-state"><strong>No contacts yet</strong>Be the first to join ' + owner.name.split(' ')[0] + "'s network.</div>";
+      return;
+    }
+    grid.innerHTML = contacts.map(c => contactCardHTML(c)).join('');
+  }
+
+  function contactCardHTML(c) {
+    const ini = initials(c.first_name, c.last_name);
+    const col = colourFor(c.first_name + c.last_name);
+    const name = [c.first_name, c.last_name].filter(Boolean).join(' ');
+    const role = [c.role || c.business_name, c.location].filter(Boolean).join(' · ');
+    const cats = (c.categories || []).map(t => `<span class="cc-tag">${t}</span>`).join('');
+
+    const ownerFirst = owner.name.split(' ')[0];
+    const waMsg = encodeURIComponent(`Hi ${c.first_name}, I got your details from ${ownerFirst}'s network and wanted to connect.`);
+    const waNum = (c.whatsapp || '').replace(/\D/g,'');
+    const waHref = waNum ? `https://wa.me/${waNum}?text=${waMsg}` : `https://wa.me/?text=${waMsg}`;
+
+    const liBtn = c.linkedin
+      ? `<a class="cc-btn cc-li" href="${c.linkedin}" target="_blank">LinkedIn</a>`
+      : c.email
+        ? `<a class="cc-btn cc-li" href="mailto:${c.email}">Email</a>`
+        : '';
+
+    return `<div class="contact-card" data-cats="${(c.categories||[]).join(',').toLowerCase()}">
+      <div class="cc-head">
+        <div class="cc-av" style="background:${col}">${ini}</div>
+        <div><div class="cc-name">${name}</div><div class="cc-role">${role}</div></div>
+      </div>
+      <p class="cc-desc">${c.description || ''}</p>
+      <div class="cc-tags">${cats}</div>
+      <div class="cc-actions">
+        <a class="cc-btn cc-wa" href="${waHref}" target="_blank">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+          WhatsApp
+        </a>
+        ${liBtn}
+      </div>
+    </div>`;
+  }
+
+  // Filter chips
+  document.getElementById('filter-strip').addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+    chip.classList.add('on');
+    activeFilter = chip.dataset.cat;
+    const filtered = activeFilter === 'all'
+      ? allContacts
+      : allContacts.filter(c => (c.categories||[]).map(x=>x.toLowerCase()).includes(activeFilter));
+    renderCards(filtered);
+  });
+
+  loadContacts();
+</script>
+</body>
+</html>

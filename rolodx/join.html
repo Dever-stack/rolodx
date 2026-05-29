@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join the Network — Rolodx</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --canvas: #ffffff; --surface-soft: #fbfbf9; --surface-card: #f5f3f0;
+      --secondary-bg: #ede9e5; --hairline: #dbd7d3;
+      --primary: #d97706; --primary-hover: #b45309; --primary-light: #fef3c7;
+      --ink: #1c1917; --body: #44403c; --mute: #78716c; --ash: #a8a29e;
+      --error: #dc2626; --error-bg: #fef2f2;
+      --success: #059669; --success-bg: #f0fdf4;
+      --rounded-md: 16px; --rounded-lg: 32px; --rounded-full: 9999px;
+      --font-display: 'Manrope', sans-serif; --font-body: 'Plus Jakarta Sans', sans-serif;
+      --nav-h: 68px;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--surface-soft); color: var(--body); font-family: var(--font-body); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+
+    /* NAV */
+    .nav { height: var(--nav-h); background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+    .nav-inner { max-width: 1280px; margin: 0 auto; padding: 0 32px; height: 100%; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--ink); text-decoration: none; letter-spacing: -0.6px; }
+    .nav-logo em { color: var(--primary); font-style: normal; }
+    .nav-back { font-size: 14px; font-weight: 600; color: var(--mute); text-decoration: none; display: flex; align-items: center; gap: 6px; }
+    .nav-back:hover { color: var(--ink); }
+
+    /* LAYOUT */
+    .page { max-width: 640px; margin: 0 auto; padding: 64px 24px 96px; }
+
+    .page-heading {
+      font-family: var(--font-display); font-size: clamp(32px, 5vw, 48px); font-weight: 800;
+      letter-spacing: -1.5px; color: var(--ink); line-height: 1.1; margin-bottom: 12px;
+    }
+    .page-heading em { color: var(--primary); font-style: normal; }
+    .page-sub { font-size: 16px; color: var(--mute); line-height: 1.65; margin-bottom: 48px; }
+
+    /* FORM */
+    .form-section { margin-bottom: 36px; }
+    .form-section-title {
+      font-family: var(--font-display); font-size: 13px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em; color: var(--primary);
+      margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--hairline);
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .form-field:last-child { margin-bottom: 0; }
+
+    label { font-size: 13px; font-weight: 600; color: var(--ink); }
+    label .opt { font-weight: 400; color: var(--ash); }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="url"],
+    input[type="tel"],
+    textarea {
+      width: 100%; padding: 11px 15px;
+      font-family: var(--font-body); font-size: 15px; color: var(--ink);
+      background: var(--canvas); border: 1.5px solid var(--hairline);
+      border-radius: var(--rounded-md); outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input:focus, textarea:focus {
+      border-color: var(--ink);
+      box-shadow: 0 0 0 4px rgba(217,119,6,0.12);
+    }
+    input.error, textarea.error { border-color: var(--error); }
+    textarea { resize: vertical; min-height: 100px; line-height: 1.55; }
+    .field-hint { font-size: 12px; color: var(--ash); }
+    .field-error { font-size: 12px; color: var(--error); display: none; }
+    .field-error.show { display: block; }
+
+    /* CATEGORIES */
+    .cat-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .cat-check { display: none; }
+    .cat-label {
+      display: inline-flex; align-items: center;
+      font-size: 13px; font-weight: 600; color: var(--body);
+      padding: 8px 16px; border-radius: var(--rounded-full);
+      border: 1.5px solid var(--hairline); background: var(--canvas);
+      cursor: pointer; transition: all 0.15s; user-select: none;
+    }
+    .cat-label:hover { border-color: var(--ash); }
+    .cat-check:checked + .cat-label { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .cat-hint { font-size: 12px; color: var(--ash); margin-top: 8px; }
+
+    /* SUBMIT */
+    .form-submit { margin-top: 40px; }
+    .btn-submit {
+      width: 100%; padding: 16px; font-family: var(--font-body); font-size: 16px; font-weight: 700;
+      background: var(--primary); color: #fff; border: none; border-radius: var(--rounded-md);
+      cursor: pointer; transition: background 0.15s, transform 0.1s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-submit:hover { background: var(--primary-hover); }
+    .btn-submit:active { transform: scale(0.99); }
+    .btn-submit:disabled { background: var(--ash); cursor: not-allowed; transform: none; }
+
+    .spinner {
+      width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.4);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin 0.7s linear infinite; display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* STATES */
+    .form-error-banner {
+      background: var(--error-bg); border: 1px solid #fca5a5; border-radius: var(--rounded-md);
+      padding: 14px 16px; font-size: 14px; color: var(--error); margin-bottom: 20px; display: none;
+    }
+    .form-error-banner.show { display: block; }
+
+    .success-state { display: none; text-align: center; padding: 64px 32px; }
+    .success-state.show { display: block; }
+    .success-icon {
+      width: 72px; height: 72px; background: var(--success-bg); border-radius: var(--rounded-full);
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;
+    }
+    .success-icon svg { width: 32px; height: 32px; stroke: var(--success); }
+    .success-heading {
+      font-family: var(--font-display); font-size: 28px; font-weight: 800;
+      letter-spacing: -0.8px; color: var(--ink); margin-bottom: 12px;
+    }
+    .success-sub { font-size: 16px; color: var(--mute); line-height: 1.65; max-width: 400px; margin: 0 auto 32px; }
+    .btn-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 12px 24px; background: var(--secondary-bg); color: var(--ink);
+      font-family: var(--font-body); font-size: 14px; font-weight: 700;
+      border-radius: var(--rounded-md); text-decoration: none; border: none; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-back:hover { background: #e0dbd5; }
+
+    @media (max-width: 640px) {
+      .form-row { grid-template-columns: 1fr; }
+      .nav-inner { padding: 0 20px; }
+      .page { padding: 40px 20px 64px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Rolod<em>x</em></a>
+    <a href="index.html" class="nav-back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      Back to network
+    </a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- Form -->
+  <div id="form-view">
+    <h1 class="page-heading">Apply to<br><em>join the network.</em></h1>
+    <p class="page-sub" id="page-sub">Fill in your details below. Barrett reviews every application — usually within 24 hours.</p>
+
+    <div class="form-error-banner" id="form-error">Something went wrong. Please try again.</div>
+
+    <form id="join-form" novalidate>
+
+      <div class="form-section">
+        <div class="form-section-title">About you</div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="first_name">First name</label>
+            <input type="text" id="first_name" name="first_name" placeholder="Jane" autocomplete="given-name">
+            <span class="field-error" id="err-first_name">Required</span>
+          </div>
+          <div class="form-field">
+            <label for="last_name">Last name</label>
+            <input type="text" id="last_name" name="last_name" placeholder="Smith" autocomplete="family-name">
+            <span class="field-error" id="err-last_name">Required</span>
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="role">Your role / job title</label>
+          <input type="text" id="role" name="role" placeholder="e.g. Property Consultant, Brand Designer, Lawyer">
+          <span class="field-error" id="err-role">Required</span>
+        </div>
+        <div class="form-field">
+          <label for="business_name">Business name <span class="opt">(optional)</span></label>
+          <input type="text" id="business_name" name="business_name" placeholder="Your company or trading name">
+        </div>
+        <div class="form-field">
+          <label for="location">City / Location</label>
+          <input type="text" id="location" name="location" placeholder="e.g. Cape Town, South Africa">
+          <span class="field-error" id="err-location">Required</span>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Tell people what you do</div>
+        <div class="form-field">
+          <label for="description">Short bio <span class="opt">(max 200 characters)</span></label>
+          <textarea id="description" name="description" maxlength="200" placeholder="One or two sentences. What do you do, who do you help, what makes you worth calling?"></textarea>
+          <span class="field-hint" id="desc-count">0 / 200</span>
+          <span class="field-error" id="err-description">Required</span>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">How to reach you</div>
+        <div class="form-field">
+          <label for="whatsapp">WhatsApp number</label>
+          <input type="tel" id="whatsapp" name="whatsapp" placeholder="e.g. 27821234567 (with country code)">
+          <span class="field-hint">Include your country code, no spaces or dashes</span>
+          <span class="field-error" id="err-whatsapp">Required</span>
+        </div>
+        <div class="form-field">
+          <label for="email">Email <span class="opt">(optional)</span></label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="form-field">
+          <label for="linkedin">LinkedIn URL <span class="opt">(optional)</span></label>
+          <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/yourprofile">
+        </div>
+        <div class="form-field">
+          <label for="website">Website <span class="opt">(optional)</span></label>
+          <input type="url" id="website" name="website" placeholder="https://yourwebsite.com">
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Categories</div>
+        <div class="cat-grid" id="cat-grid">
+          <!-- Populated from config -->
+        </div>
+        <div class="cat-hint">Pick up to 3 that best describe what you do</div>
+        <span class="field-error" id="err-categories">Select at least one category</span>
+      </div>
+
+      <!-- Honeypot — hidden from real users, bots fill it in -->
+      <div style="display:none" aria-hidden="true">
+        <label for="website_url">Leave this blank</label>
+        <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off">
+      </div>
+
+      <div class="form-submit">
+        <button type="submit" class="btn-submit" id="submit-btn">
+          <div class="spinner" id="spinner"></div>
+          <span id="submit-label">Submit application</span>
+        </button>
+        <p style="font-size:12px;color:var(--ash);text-align:center;margin-top:12px">
+          Barrett reviews every application. Your details won't be visible until approved.
+        </p>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Success -->
+  <div class="success-state" id="success-view">
+    <div class="success-icon">
+      <svg fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <path d="M20 6 9 17l-5-5"/>
+      </svg>
+    </div>
+    <div class="success-heading">Application sent.</div>
+    <p class="success-sub" id="success-sub">Barrett will review your details and you'll be live in the network within 24 hours.</p>
+    <a href="index.html" class="btn-back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      Back to the network
+    </a>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script>
+  const { createClient } = supabase;
+  const db = createClient(ROLODX_CONFIG.supabase.url, ROLODX_CONFIG.supabase.anonKey);
+  const owner = ROLODX_CONFIG.owner;
+
+  // Personalise
+  document.getElementById('page-sub').textContent =
+    'Fill in your details below. ' + owner.name.split(' ')[0] + ' reviews every application — usually within 24 hours.';
+  document.getElementById('success-sub').textContent =
+    owner.name.split(' ')[0] + ' will review your details and you\'ll be live in the network within 24 hours.';
+  document.title = 'Join the Network — Rolodx';
+
+  // Populate categories
+  const catGrid = document.getElementById('cat-grid');
+  ROLODX_CONFIG.categories.forEach(cat => {
+    const id = 'cat-' + cat.toLowerCase().replace(/\s+/g, '-');
+    catGrid.innerHTML += `
+      <span>
+        <input class="cat-check" type="checkbox" id="${id}" value="${cat}">
+        <label class="cat-label" for="${id}">${cat}</label>
+      </span>`;
+  });
+
+  // Limit category selection to 3
+  catGrid.addEventListener('change', () => {
+    const checked = catGrid.querySelectorAll('.cat-check:checked');
+    if (checked.length > 3) { checked[checked.length - 1].checked = false; }
+  });
+
+  // Char counter
+  const descEl = document.getElementById('description');
+  descEl.addEventListener('input', () => {
+    document.getElementById('desc-count').textContent = descEl.value.length + ' / 200';
+  });
+
+  // Validation
+  function required(id) {
+    const el = document.getElementById(id);
+    const val = el.value.trim();
+    const errEl = document.getElementById('err-' + id);
+    if (!val) {
+      el.classList.add('error');
+      errEl.classList.add('show');
+      return false;
+    }
+    el.classList.remove('error');
+    errEl.classList.remove('show');
+    return true;
+  }
+
+  // Rate limiting — max 3 submissions per hour per browser
+  const RATE_KEY = 'rolodx_submit_times';
+  function checkRateLimit() {
+    const now = Date.now();
+    const hour = 60 * 60 * 1000;
+    const times = JSON.parse(localStorage.getItem(RATE_KEY) || '[]')
+      .filter(t => now - t < hour);
+    if (times.length >= 3) return false;
+    times.push(now);
+    localStorage.setItem(RATE_KEY, JSON.stringify(times));
+    return true;
+  }
+
+  // Record page load time — bots submit instantly
+  const pageLoadTime = Date.now();
+
+  // Submit
+  document.getElementById('join-form').addEventListener('submit', async e => {
+    e.preventDefault();
+
+    // Honeypot check — real users leave this blank
+    if (document.getElementById('website_url').value) return;
+
+    // Time check — reject submissions under 3 seconds (bot speed)
+    if (Date.now() - pageLoadTime < 3000) return;
+
+    // Rate limit check
+    if (!checkRateLimit()) {
+      const banner = document.getElementById('form-error');
+      banner.textContent = 'Too many submissions. Please try again in an hour.';
+      banner.classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    const valid = ['first_name','last_name','role','location','description','whatsapp'].every(required);
+    const cats = Array.from(catGrid.querySelectorAll('.cat-check:checked')).map(c => c.value);
+    const catErr = document.getElementById('err-categories');
+    if (!cats.length) { catErr.classList.add('show'); }
+    else { catErr.classList.remove('show'); }
+    if (!valid || !cats.length) return;
+
+    const btn = document.getElementById('submit-btn');
+    const spinner = document.getElementById('spinner');
+    const label = document.getElementById('submit-label');
+    btn.disabled = true;
+    spinner.style.display = 'block';
+    label.textContent = 'Submitting...';
+
+    const payload = {
+      first_name:    document.getElementById('first_name').value.trim(),
+      last_name:     document.getElementById('last_name').value.trim(),
+      role:          document.getElementById('role').value.trim(),
+      business_name: document.getElementById('business_name').value.trim() || null,
+      location:      document.getElementById('location').value.trim(),
+      description:   document.getElementById('description').value.trim(),
+      whatsapp:      document.getElementById('whatsapp').value.trim(),
+      email:         document.getElementById('email').value.trim() || null,
+      linkedin:      document.getElementById('linkedin').value.trim() || null,
+      website:       document.getElementById('website').value.trim() || null,
+      categories:    cats,
+      status:        'pending',
+    };
+
+    const { error } = await db.from('contacts').insert(payload);
+
+    spinner.style.display = 'none';
+    btn.disabled = false;
+    label.textContent = 'Submit application';
+
+    if (error) {
+      const banner = document.getElementById('form-error');
+      banner.textContent = error.message || 'Something went wrong. Please try again.';
+      banner.classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    document.getElementById('form-view').style.display = 'none';
+    document.getElementById('success-view').classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Clear errors on input
+  document.querySelectorAll('input, textarea').forEach(el => {
+    el.addEventListener('input', () => {
+      el.classList.remove('error');
+      const errEl = document.getElementById('err-' + el.id);
+      if (errEl) errEl.classList.remove('show');
+    });
+  });
+</script>
+</body>
+</html>
