@@ -6,7 +6,7 @@ const ROLODX_CONFIG = {
   // Supabase — get these from your project Settings > API
   supabase: {
     url:     'https://rhdcnzvgtkwqbgovhprj.supabase.co',       // e.g. https://xxxx.supabase.co 
-    anonKey: 'sb_publishable_ftnOQymt0w09VbMDb2afRQ_zaedbi1a',  // safe to expose publicly
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJoZGNuenZndGt3cWJnb3ZocHJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDU4NzEsImV4cCI6MjA5NTYyMTg3MX0.aXtHlgJ1iPr0ZLQzNKaLjDSPOdCha0yohoYah9LUi4I',  // safe to expose publicly
   },
 
   // Your personal details — shown prominently on the browse page
